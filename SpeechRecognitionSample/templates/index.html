@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Sentiment Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        input[type="file"] {
+            margin: 20px 0;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .response {
+            margin: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Audio Sentiment Analysis</h2>
+        <p>Select an audio file (WAV format) to analyze its sentiment.</p>
+        <form id="uploadForm">
+            <input type="file" id="audioFile" name="audio" accept=".wav" required>
+            <br>
+            <button type="button" onclick="uploadAudio()">Submit</button>
+        </form>
+        <div class="response" id="responseText"></div>
+    </div>
+
+    <script>
+        // JavaScript function to handle file upload and response
+        function uploadAudio() {
+            const fileInput = document.getElementById('audioFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('audio', file);
+
+            // Make the request to the Flask backend
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const responseText = document.getElementById('responseText');
+                if (data.error) {
+                    responseText.innerHTML = `<span style="color: red;">${data.error}</span>`;
+                } else {
+                    responseText.innerHTML = `<span style="color: green;">Predicted Sentiment: ${data.predicted_class}</span>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const responseText = document.getElementById('responseText');
+                responseText.innerHTML = `<span style="color: red;">An error occurred. Please try again.</span>`;
+            });
+        }
+    </script>
+</body>
+</html>
