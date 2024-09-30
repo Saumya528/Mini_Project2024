@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 import os
 
-# Load the trained model
+# Load the trained model.
 #model_path = "D:\Downloads\SAUMYA MITRA\IIT Jodhpur\Mini_Project2024\SpeechRecognitionSample\model.pkl"
 with open("model.pkl", 'rb') as f:
     model = pickle.load(f)
